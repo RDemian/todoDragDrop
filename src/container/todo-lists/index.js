@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import * as listActions from '../../store/todo-lists/actions';
 import * as itemsActions from '../../store/todo-items/actions';
 import * as todoListsSelectors from '../../store/todo-lists/selectors';
@@ -13,8 +12,8 @@ import TodoItem from '../../component/todo-item';
 
 import './styles.scss';
 
-function isNull() {
-    if (typeof a === "null") {
+function isNull(e) {
+    if (typeof e === 'null') {
         return true;
     }
     return false;
@@ -29,19 +28,16 @@ function getParentElement(currentEl, needClass) {
     }
     return currentEl;
 }
-
-class TodoList extends Component {
+class TodoLists extends Component {
 
     constructor(props) {
         super(props);
-        this.weekList = document.querySelector('.week__list');
-        this.weekItems = document.querySelectorAll('.week__item');
-        this.startContainer = null; // строка списка откуда забрали элемент
-        this.targetContainer = null; // целевой контейнер
-        this.moveElement = null; // перемещаемый элемент
-        this.replacedElement = null; // замещаемый элемент
+        this.startContainer = null;
+        this.moveElement = null;
+        this.targetContainer = null;
+        this.replacedElement = null;
         this.state = {
-            editItemId: '0',
+            editItemId: null,
         }
     }
 
@@ -87,6 +83,61 @@ class TodoList extends Component {
         )
     }
 
+    onDragStart = ev => {
+        ev.dataTransfer.effectAllowed='move';
+
+        this.startContainer = getParentElement(ev.target, 'TodoListOne');
+        this.moveElement = getParentElement(ev.target, 'TodoItem');
+        
+        return true;
+    }
+    onDragEnter = e => {
+        console.log("TCL: TodoList -> onDragEnter = e => {", e )
+    }
+    onDrop = ev => {
+        const { dispatch } = this.props;
+        this.targetContainer = getParentElement(ev.target, 'TodoListOne');
+        this.replacedElement = getParentElement(ev.target, 'TodoItem');
+        
+        if (this.moveElement !== this.replacedElement) {
+            const startItemId = this.moveElement.getAttribute('item-id');
+            const startName = this.moveElement.getAttribute('item-name');
+            console.log("TCL: startName", startName)
+            const startItemPosition = this.moveElement.getAttribute('position');
+            console.log("TCL: startItemPosition", startItemPosition)
+            const startListId = this.startContainer.getAttribute('list-id');
+            
+
+            const targetItemId = this.replacedElement.getAttribute('item-id');
+            const targetName = this.replacedElement.getAttribute('item-name');
+            console.log("TCL: targetName", targetName)
+            const targetItemPosition = this.replacedElement.getAttribute('position');
+            console.log("TCL: targetItemPosition", targetItemPosition)
+            const targetListId = this.targetContainer.getAttribute('list-id');
+            
+
+            dispatch(itemsActions.updateItem({
+                "id": startItemId,
+                "list_id": targetListId,
+                "position": Number(targetItemPosition),
+                "name": startName,
+            })).then(() => {
+                dispatch(itemsActions.updateItem({
+                    "id": targetItemId,
+                    "list_id": startListId,
+                    "position": Number(startItemPosition),
+                    "name": targetName,
+                }))
+            })
+        }
+    }
+    onDrag = e => {
+        console.log("TCL: TodoList -> onDrag = e => {", e )
+    }
+    onDragOver = e => {
+        e.preventDefault();
+    }
+
     render() {
         const { listsWithItems } = this.props;
         const { editItemId } = this.state;
@@ -94,30 +145,31 @@ class TodoList extends Component {
         return (
             <div className="TodoLists">
                 {this.renderHeader()}
-                <div className="TodoLists__ul" onDrop={this.onDragDrop}>
+                <div className="TodoLists__ul">
                     {listsWithItems.map(list => {
                         return (
                             <TodoListOne 
                                 key={list.id}
                                 listName={list.name}
+                                listId={list.id}
                                 onDragEnter={this.onDragEnter}
-                                
-                                
+                                onDragOver={this.onDragOver}
                             >
                                 {list.items.map((item, index) => 
-                                    <div key={item.id} className="TodoLists__itemContainer" onDrop={this.onDragDrop} droppable="true">
-                                        <TodoItem 
-                                            position={index}
-                                            name={item.name}
-                                            edit={item.id === editItemId}
-                                            onItemClick={() => this.onItemClick(item.id)}
-                                            onAcceptBtnClick={this.onAcceptBtnClick}
-                                            onCancellBtnClick={this.onCancellBtnClick}
-                                            onDoneBtnClick={this.onDoneBtnClick}
-                                            onDragStart={this.onDragStart}
-                                            onDrop={this.onDragDrop}
-                                        />
-                                    </div>
+                                    <TodoItem 
+                                        key={`${item.id}/${item.position}`}
+                                        position={index}
+                                        name={item.name}
+                                        itemId={item.id}
+                                        edit={item.id === editItemId}
+                                        onItemClick={() => this.onItemClick(item.id)}
+                                        onAcceptBtnClick={this.onAcceptBtnClick}
+                                        onCancellBtnClick={this.onCancellBtnClick}
+                                        onDoneBtnClick={this.onDoneBtnClick}
+                                        onDragStart={this.onDragStart}
+                                        onDrop={this.onDrop}
+                                        onDragOver={this.onDragOver}
+                                    />
                                 )}
                             </TodoListOne>
                         )
@@ -135,4 +187,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(TodoList)
+export default connect(mapStateToProps)(TodoLists)

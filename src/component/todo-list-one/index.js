@@ -7,9 +7,9 @@ import CtrlInput from '../../component/ctrl-input';
 
 import './styles.scss';
 
-const TodoListOne = ({ listName, children }) => {
+const TodoListOne = ({ listName, children, listId }) => {
     return (
-        <div className="TodoListOne">
+        <div className="TodoListOne" list-id={listId} list-name={listName}>
             <div className="TodoListOne__header">
                 <div className="TodoListOne__title">{ listName }</div>
                 <BtnsList>
@@ -26,6 +26,7 @@ const TodoListOne = ({ listName, children }) => {
 
 TodoListOne.propTypes = {
     listName: PropTypes.string.isRequired,
+    listId: PropTypes.string.isRequired,
     children: PropTypes.oneOfType([
         PropTypes.array,
         PropTypes.object,

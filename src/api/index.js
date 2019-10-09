@@ -24,3 +24,29 @@ export const getTodoLists = async () => {
 export const getTodoItems = async () => {
     return await getData('todoItems');
 }
+
+
+const updateData = async (url, data) => {
+    console.log("TCL: updateData -> data", data)
+    const resp = await fetch(`${BASE_URL}${url}/${data.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (!resp.ok) {
+        throw new Error(`Запрос по URL ${`${BASE_URL}${url}`}, вернул статус ${resp.status}`);
+    }
+
+    return await resp.json();
+}
+
+export const updateTodoLists = async (data) => {
+    return await updateData('todoList', data);
+}
+
+export const updateTodoItems = async (data) => {
+    return await updateData('todoItems', data);
+}

@@ -16,11 +16,23 @@ const TodoItem = ({
         onCancellBtnClick,
         onDoneBtnClick,
         onDragStart,
-        onDragDrop,
+        itemId,
+        onDragOver,
+        onDrop,
     }) => {
 
     return (
-        <div className="TodoItem" draggable="true" droppable="true" onClick={onItemClick} onDragStart={onDragStart} onDrop={onDragDrop} position={position}>
+        <div className="TodoItem"
+            draggable="true"
+            droppable="true"
+            onClick={onItemClick}
+            item-id={itemId}
+            item-name={name}
+            position={position} 
+            onDragStart={onDragStart}
+            onDrop={(e)=>onDrop(e)}
+            onDragOver={onDragOver}
+        >
             {!edit && name}
             {edit && <BtnsList>
                 <CtrlInput currentValue={name}/>

@@ -18,8 +18,8 @@
     },
     {
       "id": 1,
-      "list_id": 0,
-      "isDone": true,
+      "list_id": 1,
+      "isDone": false,
       "name": "Переаттестация"
     },
     {

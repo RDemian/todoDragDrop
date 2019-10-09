@@ -26,7 +26,7 @@ export default function reducer(state = initialState, action) {
                 };
 
                 const cloneItem = {};
-                for (var key in item) {
+                for (const key in item) {
                     cloneItem[key] = item[key];
                 };
                 return cloneItem;
@@ -42,7 +42,7 @@ export default function reducer(state = initialState, action) {
             const deleteItemId = get(action.payload, 'item.id');
             const deleteItemsArray = state.items.map( item => {
                 const cloneItem = {};
-                for (var key in item) {
+                for (const key in item) {
                     cloneItem[key] = item[key];
                 };
                 return cloneItem;

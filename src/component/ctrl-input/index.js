@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './styles.scss';
 
 const CtrlInput = ({ currentValue }) => {
-    return <input type="text" className="CtrlInput" value={currentValue} />
+    return <input type="text" className="CtrlInput" value={currentValue} onChange={() => {}}/>
 }
 
 CtrlInput.propTypes = {

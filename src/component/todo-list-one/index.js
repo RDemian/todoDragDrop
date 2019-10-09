@@ -7,9 +7,9 @@ import CtrlInput from '../../component/ctrl-input';
 
 import './styles.scss';
 
-const TodoListOne = ({ listName, children, listId }) => {
+const TodoListOne = ({ listName, children, listId, onDrop, onDragOver, }) => {
     return (
-        <div className="TodoListOne" list-id={listId} list-name={listName}>
+        <div className="TodoListOne" list-id={listId} list-name={listName} onDrop={onDrop} onDragOver={onDragOver}>
             <div className="TodoListOne__header">
                 <div className="TodoListOne__title">{ listName }</div>
                 <BtnsList>

@@ -15,12 +15,13 @@ export default function reducer(state = initialState, action) {
             return {...state, ...action.payload}
         case TYPES.ITEMS_ERROR:
             return {...state, ...action.payload}
-        case TYPES.ITEMS_UPDATE:
+        //update
+        case TYPES.ITEM_UPDATE:
             return {...state, ...action.payload}
-        case TYPES.ITEMS_UPDATE_SUCCESS:
-            const newItemId = get(action.payload, 'item.id');
-            const cloneItemsArray = state.items.map( item => {
-                if (item.id === newItemId) {
+        case TYPES.ITEM_UPDATE_SUCCESS:
+            const updateItemId = get(action.payload, 'item.id');
+            const updateItemsArray = state.items.map( item => {
+                if (item.id === updateItemId) {
                     return action.payload.item;
                 };
 
@@ -31,9 +32,27 @@ export default function reducer(state = initialState, action) {
                 return cloneItem;
             })
             
-            return {...state, fetching: action.payload.fetching, items: cloneItemsArray}
-        case TYPES.ITEMS_UPDATE_ERROR:
+            return {...state, fetching: action.payload.fetching, items: updateItemsArray}
+        case TYPES.ITEM_UPDATE_ERROR:
             return {...state, ...action.payload}
+        //delete
+        case TYPES.ITEM_DELETE:
+            return {...state, ...action.payload}
+        case TYPES.ITEM_DELETE_SUCCESS:
+            const deleteItemId = get(action.payload, 'item.id');
+            const deleteItemsArray = state.items.map( item => {
+                const cloneItem = {};
+                for (var key in item) {
+                    cloneItem[key] = item[key];
+                };
+                return cloneItem;
+            })
+            return {...state,
+                fetching: action.payload.fetching,
+                items: deleteItemsArray.filter(item => item.id !== deleteItemId)}
+        case TYPES.ITEM_DELETE_ERROR:
+            return {...state, ...action.payload}
+
         default:
             return state;
     }

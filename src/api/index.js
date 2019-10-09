@@ -7,6 +7,7 @@ const METHOD = {
     DELETE: 'DELETE',
 }
 
+//Получение
 const getData = async (url) => {
     const resp = await fetch(`${BASE_URL}${url}`);
 
@@ -16,20 +17,10 @@ const getData = async (url) => {
 
     return await resp.json();
 }
-
-export const getTodoLists = async () => {
-    return await getData('todoList');
-}
-
-export const getTodoItems = async () => {
-    return await getData('todoItems');
-}
-
-
-const updateData = async (url, data) => {
-    console.log("TCL: updateData -> data", data)
+//Обновление / Удаление
+const updateData = async (url, data, method) => {
     const resp = await fetch(`${BASE_URL}${url}/${data.id}`, {
-        method: 'PUT',
+        method: method,
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
@@ -42,11 +33,27 @@ const updateData = async (url, data) => {
 
     return await resp.json();
 }
+//Получение
+export const getTodoLists = async () => {
+    return await getData('todoList');
+}
 
+export const getTodoItems = async () => {
+    return await getData('todoItems');
+}
+//Обновление
 export const updateTodoLists = async (data) => {
-    return await updateData('todoList', data);
+    return await updateData('todoList', data, METHOD.PUT);
 }
 
 export const updateTodoItems = async (data) => {
-    return await updateData('todoItems', data);
+    return await updateData('todoItems', data, METHOD.PUT);
+}
+//Удаление
+export const deleteTodoLists = async (data) => {
+    return await updateData('todoList', data, METHOD.DELETE);
+}
+
+export const deleteTodoItems = async (data) => {
+    return await updateData('todoItems', data, METHOD.DELETE);
 }

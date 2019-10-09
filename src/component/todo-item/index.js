@@ -10,7 +10,7 @@ import './styles.scss';
 const TodoItem = ({
         edit,
         name,
-        position,
+        isDone,
         onItemClick,
         onAcceptBtnClick,
         onCancellBtnClick,
@@ -22,19 +22,17 @@ const TodoItem = ({
     }) => {
 
     return (
-        <div className="TodoItem"
-            draggable="true"
+        <div className={`TodoItem ${isDone && 'TodoItem__done'}`}
+            draggable={!isDone}
             droppable="true"
             onClick={onItemClick}
             item-id={itemId}
-            item-name={name}
-            position={position} 
             onDragStart={onDragStart}
             onDrop={(e)=>onDrop(e)}
             onDragOver={onDragOver}
         >
-            {!edit && name}
-            {edit && <BtnsList>
+            {(!edit || isDone) && name}
+            {!isDone && edit && <BtnsList>
                 <CtrlInput currentValue={name}/>
                 <Button name="Принять" onClick={onAcceptBtnClick}/>
                 <Button name="Отменить" onClick={onCancellBtnClick}/>

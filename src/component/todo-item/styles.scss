@@ -3,6 +3,12 @@
 .TodoItem {
     margin: 5px;
     padding: 10px 5px;
+    background-color: $fourth;
     box-shadow: 0 0 2px $first;
     cursor: pointer;
+
+    &__done {
+        background-color: $fifth;
+        text-decoration: line-through;
+    }
 }

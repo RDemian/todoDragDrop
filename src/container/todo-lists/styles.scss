@@ -3,6 +3,8 @@
 .TodoLists {
     background-color: $third;
     box-shadow: 0 0 5px $first;
+    height: 95vh;
+    overflow: auto;
 
     &__header {
         margin-bottom: 10px;

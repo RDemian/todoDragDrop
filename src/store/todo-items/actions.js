@@ -1,6 +1,6 @@
 import * as api from '../../api';
 
-const TYPES = {
+export const TYPES = {
     ITEMS_FETCH: 'ITEMS_FETCH',
     ITEMS_SUCCESS: 'ITEMS_SUCCESS',
     ITEMS_ERROR: 'ITEMS_ERROR',

@@ -1,3 +1,3 @@
 export const selectItems = state => {
-    return state.items;
+    return state.todoItems.items;
 }

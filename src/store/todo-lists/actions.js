@@ -1,6 +1,6 @@
 import * as api from '../../api';
 
-const TYPES = {
+export const TYPES = {
     LISTS_FETCH: 'LISTS_FETCH',
     LISTS_SUCCESS: 'LISTS_SUCCESS',
     LISTS_ERROR: 'LISTS_ERROR',

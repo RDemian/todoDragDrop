@@ -7,6 +7,8 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import App from './container/app';
 import * as redusers from './store/reducers';
 
+import './index.scss';
+
 const store = createStore(combineReducers(redusers), composeWithDevTools(applyMiddleware(thunk)))
 
 ReactDOM.render(

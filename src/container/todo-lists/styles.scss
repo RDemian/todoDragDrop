@@ -6,8 +6,8 @@
 
     &__header {
         margin-bottom: 10px;
-        padding: 15px;
-        background-color: $second;    
+        padding: 25px;
+        background-color: $second;
     }
 
     &__title {
@@ -16,6 +16,12 @@
     }
 
     &__ul {
+        display: flex;
+        flex-wrap: wrap;
         padding: 15px;
+    }
+
+    &__item {
+        background-color: $fourth;
     }
 }

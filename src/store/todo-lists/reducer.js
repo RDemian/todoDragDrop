@@ -1,3 +1,5 @@
+import { TYPES } from './actions';
+
 const initialState = {
     fetching: false,
     fetchError: null,
@@ -5,9 +7,14 @@ const initialState = {
 }
 
 export default function reducer(state = initialState, action) {
-    if (action.payload) {
-        return {...state, ...action.payload}
-    } else {
-        return state;
+    switch(action.type) {
+        case TYPES.LISTS_FETCH:
+            return {...state, ...action.payload}
+        case TYPES.LISTS_SUCCESS:
+            return {...state, ...action.payload}
+        case TYPES.LISTS_ERROR:
+            return {...state, ...action.payload}
+        default:
+            return state;
     }
 }

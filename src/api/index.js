@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000/';
+const BASE_URL = 'http://localhost:3003/';
 
 const METHOD = {
     GET: 'GET',
@@ -21,6 +21,6 @@ export const getTodoLists = async () => {
     return await getData('todoList');
 }
 
-export const getTodos = async () => {
-    return await getData('todos');
+export const getTodoItems = async () => {
+    return await getData('todoItems');
 }

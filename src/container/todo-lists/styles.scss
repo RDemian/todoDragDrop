@@ -1,0 +1,21 @@
+@import '../../theme.scss';
+
+.TodoLists {
+    background-color: $third;
+    box-shadow: 0 0 5px $first;
+
+    &__header {
+        margin-bottom: 10px;
+        padding: 15px;
+        background-color: $second;    
+    }
+
+    &__title {
+        margin-bottom: 10px;
+        font-size: 22px;
+    }
+
+    &__ul {
+        padding: 15px;
+    }
+}

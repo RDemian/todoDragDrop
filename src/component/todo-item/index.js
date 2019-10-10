@@ -9,6 +9,7 @@ import './styles.scss';
 
 const TodoItem = ({
         edit,
+        itemId,
         name,
         isDone,
         onItemClick,
@@ -16,7 +17,6 @@ const TodoItem = ({
         onCancellBtnClick,
         onDoneBtnClick,
         onDragStart,
-        itemId,
         onDragOver,
         onDrop,
     }) => {
@@ -49,6 +49,9 @@ TodoItem.propTypes = {
     onAcceptBtnClick: PropTypes.func,
     onCancellBtnClick: PropTypes.func,
     onDoneBtnClick: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDragOver: PropTypes.func,
+    onDrop: PropTypes.func,
 }
 
 TodoItem.defaultProps = {
@@ -56,6 +59,9 @@ TodoItem.defaultProps = {
     onAcceptBtnClick: () => {},
     onCancellBtnClick: () => {},
     onDoneBtnClick: () => {},
+    onDragStart: () => {},
+    onDragOver: () => {},
+    onDrop: () => {},
 }
 
 export default TodoItem;

@@ -9,7 +9,7 @@ import './styles.scss';
 
 const TodoListOne = ({ listName, children, listId, onDrop, onDragOver, }) => {
     return (
-        <div className="TodoListOne" list-id={listId} list-name={listName} onDrop={onDrop} onDragOver={onDragOver}>
+        <div className="TodoListOne" list-id={listId} onDrop={onDrop} onDragOver={onDragOver}>
             <div className="TodoListOne__header">
                 <div className="TodoListOne__title">{ listName }</div>
                 <BtnsList>
@@ -31,10 +31,14 @@ TodoListOne.propTypes = {
         PropTypes.array,
         PropTypes.object,
     ]),
+    onDragOver: PropTypes.func,
+    onDrop: PropTypes.func,
 }
 
 TodoListOne.defaultProps = {
     children: [],
+    onDragOver: () => {},
+    onDrop: () => {},
 }
 
 export default TodoListOne;

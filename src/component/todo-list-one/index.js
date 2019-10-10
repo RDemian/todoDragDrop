@@ -26,7 +26,7 @@ const TodoListOne = ({ listName, children, listId, onDrop, onDragOver, }) => {
 
 TodoListOne.propTypes = {
     listName: PropTypes.string.isRequired,
-    listId: PropTypes.string.isRequired,
+    listId: PropTypes.number.isRequired,
     children: PropTypes.oneOfType([
         PropTypes.array,
         PropTypes.object,

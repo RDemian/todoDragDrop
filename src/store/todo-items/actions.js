@@ -89,7 +89,7 @@ export function deleteItem(data) {
         })
 
         try {
-            const updateItem = await api.updateTodoItems(data);
+            const updateItem = await api.deleteTodoItems(data);
             dispatch({
                 type: TYPES.ITEM_DELETE_SUCCESS,
                 payload: {

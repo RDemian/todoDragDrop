@@ -22,7 +22,7 @@ class TodoLists extends Component {
         this.endItemId = null;
         this.state = {
             editItemId: null,
-            sortlistsWithItems: null,
+            countSort: 0,
         }
     }
 
@@ -49,25 +49,37 @@ class TodoLists extends Component {
         return currentEl;
     }
 
-    getListIndex = (listsWithItems, ListId) => {
-        return listsWithItems.findIndex(el => el.id === ListId);
+    _getIndexById = (lists, ElemId) => {
+        return lists.findIndex(el => el.id === ElemId);
     }
 
-    getItems = (listId) => {
+    _getItems = (listId) => {
         const { listsWithItems } = this.props;
         const list = listsWithItems.filter(list => list.id === listId);
         return list[0] && list[0].items;
     }
 
-    findElement = (listId, itemId) => {
+    _findElement = (listId, itemId) => {
         const { listsWithItems } = this.props;
         const list = listsWithItems.filter(list => list.id === listId);
         const item = list[0] && list[0].items.filter(item => item.id === itemId);
         return {...item[0]}
     }
 
+    _cloneListWithNewItems = (list, listIndex, items) =>{
+        return list.map((list, index) => {
+            const cloneList = {}
+            for (const key in list) {
+                cloneList[key] = list[key];
+            };
+            if (index === listIndex) {
+                cloneList.items = items;
+            }
+            return cloneList;
+        });
+    }
+
     onItemClick = (id) => {
-        console.log("TCL: TodoLists -> onItemClick -> onItemClick", id)
         if (this.state.editItemId !== id) {
             this.setState({
                 editItemId: id,
@@ -89,7 +101,7 @@ class TodoLists extends Component {
     onDoneBtnClick = (ev, listId, itemId) => {
         ev.stopPropagation();
         const { dispatch } = this.props;
-        const item = this.findElement(listId, itemId);
+        const item = this._findElement(listId, itemId);
         
         dispatch(itemsActions.updateItem({
             ...item,
@@ -109,88 +121,51 @@ class TodoLists extends Component {
         return true;
     }
 
-    cloneListWithNewItems = (list, listIndex, items) =>{
-        return list.map((list, index) => {
-            const cloneList = {}
-            for (const key in list) {
-                cloneList[key] = list[key];
-            };
-            if (index === listIndex) {
-                cloneList.items = items;
-            }
-            return cloneList;
-        });
+    onDellDrop = async ev => {
+        ev.preventDefault();
+        const { dispatch } = this.props;
+        this.endListId = null;
+        this.endItemId = null;
+        await dispatch(itemsActions.deleteItem({
+            id: this.startItemId,
+        }))
+        await dispatch(itemsActions.fetchItems());
     }
 
     onDrop = async ev => {
         ev.stopPropagation();
-        
-        const { dispatch, listsWithItems } = this.props;
-        
-        const targetEl = ev.target;
+        ev.preventDefault();
+        const { dispatch } = this.props;
 
+        const targetEl = ev.target;
         const list = TodoLists.getParentElement(targetEl, 'TodoListOne');
         this.endListId = list && Number(list.getAttribute('list-id'));
-        
-        if (targetEl.hasAttributes('item-id')) {
-            const item = TodoLists.getParentElement(targetEl, 'TodoItem');
-            this.endItemId = item && Number(item.getAttribute('item-id'));
-        }
 
         const startItemId = this.startItemId;
         const startListId = this.startListId;
         const endListId = this.endListId;
-
-        const startItem = this.findElement(startListId, startItemId);
-
-        if (startListId !== endListId) {
-            console.log('вход1');
-            
+        
+        const changeList = startListId !== endListId;
+        if (changeList) {
+            const startItem = this._findElement(startListId, startItemId);
             await dispatch(itemsActions.updateItem({
                 ...startItem,
                 list_id: endListId,
             }))
-            
-            /*
-            const startItems = this.getItems(startListId);
-            const cloneStartItem = {...startItems.find(el => el.id === startItemId)};
-            const newEndItems = [...this.getItems(endListId), cloneStartItem];
-            console.log("TCL: TodoLists -> newEndItems", newEndItems)
-            const newStartItems = startItems.filter(el => el.id !== startItemId);
-            console.log("TCL: TodoLists -> newStartItems", newStartItems)
-
-            const startListIndex = this.getListIndex(listsWithItems, startListId);
-            const startSortList = this.cloneListWithNewItems(listsWithItems, startListIndex, newStartItems);
-
-            const endlistIndex = this.getListIndex(listsWithItems, endListId);
-            const sortList = this.cloneListWithNewItems(startSortList, endlistIndex, newEndItems);
-            
-            this.setState({
-                sortlistsWithItems: sortList,
-            })
-            */
-        }
-        
-        if ((startListId === endListId) && (this.endItemId || this.endItemId === 0) && startItemId !== this.endItemId) {
-            console.log('вход2');
-            const items = this.getItems(endListId);
-            
-            const startPos = items.findIndex(el => el.id === startItemId);
-            const endPos = items.findIndex(el => el.id === this.endItemId);
-            [items[startPos], items[endPos]] = [items[endPos], items[startPos]];
-            const listIndex = this.getListIndex(listsWithItems, endListId);
-            const sortList = this.cloneListWithNewItems(listsWithItems, listIndex, items);
-            
-            this.setState({
-                sortlistsWithItems: sortList,
-            })
+        } else {
+            if (targetEl.classList.contains('TodoItem')) {
+                this.endItemId = ev.target && Number(ev.target.getAttribute('item-id'));
+                this.setState(state => ({
+                    countSort: ++state.countSort,
+                }))
+            }
         }
     }
-    //Пока не написал этот обработчик драг&дроп не работало, час искал в чем причина...
+
     onDragOver = ev => {
         ev.preventDefault();
     }
-
+    
     renderHeader() {
         return (
             <div className="TodoLists__header">
@@ -202,17 +177,29 @@ class TodoLists extends Component {
             </div>
         )
     }
+
+    sortList = (listsWithItems) => {
+        if ((this.startListId === this.endListId) && (this.startItemId || this.startItemId === 0) && (this.endItemId || this.endItemId === 0)) {
+            const listIndex = this._getIndexById(listsWithItems, this.startListId);
+            const currentItems = this._getItems(listIndex);
+            const startIndex = this._getIndexById(currentItems, this.startItemId);
+            const endIndex = this._getIndexById(currentItems, this.endItemId);
+            if ((startIndex || startIndex === 0) && (endIndex || endIndex === 0)) {
+                [currentItems[startIndex], currentItems[endIndex]] = [currentItems[endIndex], currentItems[startIndex]];
+            }
+        }
+
+        return listsWithItems;
+    }
     
     render() {
         const { listsWithItems } = this.props;
-        const { editItemId, sortlistsWithItems } = this.state;
-        console.log("TCL: TodoLists -> render -> sortlistsWithItems", sortlistsWithItems)
+        const { editItemId } = this.state;
 
-        const displayList = sortlistsWithItems || listsWithItems;
-        console.log("TCL: TodoLists -> render -> displayList", displayList)
-
+        const displayList = this.sortList(listsWithItems);
+        
         return (
-            <div className="TodoLists">
+            <div className="TodoLists" onDrop={this.onDellDrop} onDragOver={this.onDragOver}>
                 {this.renderHeader()}
                 <div className="TodoLists__ul">
                     {displayList.map(list => {

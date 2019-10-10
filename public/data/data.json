@@ -18,15 +18,15 @@
     },
     {
       "id": 1,
-      "list_id": 1,
+      "list_id": 0,
       "isDone": false,
       "name": "Переаттестация"
     },
     {
       "id": 2,
       "list_id": 0,
-      "isDone": true,
-      "name": "Посмотреть yaplakal.com"
+      "isDone": false,
+      "name": "Посмотреть ЯП"
     },
     {
       "id": 3,
@@ -37,13 +37,13 @@
     {
       "id": 4,
       "list_id": 1,
-      "isDone": false,
+      "isDone": true,
       "name": "Посмотреть телик"
     },
     {
       "id": 5,
       "list_id": 1,
-      "isDone": true,
+      "isDone": false,
       "name": "Попить пива"
     }
   ]

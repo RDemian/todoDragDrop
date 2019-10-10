@@ -49,7 +49,6 @@ TodoItem.propTypes = {
     onAcceptBtnClick: PropTypes.func,
     onCancellBtnClick: PropTypes.func,
     onDoneBtnClick: PropTypes.func,
-    position: PropTypes.number.isRequired,
 }
 
 TodoItem.defaultProps = {

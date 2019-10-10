@@ -24,7 +24,7 @@
     },
     {
       "id": 2,
-      "list_id": 0,
+      "list_id": 1,
       "isDone": false,
       "name": "Посмотреть ЯП"
     },
@@ -43,8 +43,14 @@
     {
       "id": 5,
       "list_id": 1,
-      "isDone": false,
+      "isDone": true,
       "name": "Попить пива"
+    },
+    {
+      "id": 6,
+      "list_id": 0,
+      "isDone": false,
+      "name": "Выпить чашечку кофе"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import BtnsList from '../../component/btns-list';
@@ -7,61 +7,76 @@ import CtrlInput from '../../component/ctrl-input';
 
 import './styles.scss';
 
-const TodoItem = ({
-        edit,
-        itemId,
-        name,
-        isDone,
-        onItemClick,
-        onAcceptBtnClick,
-        onCancellBtnClick,
-        onDoneBtnClick,
-        onDragStart,
-        onDragOver,
-        onDrop,
-    }) => {
+class TodoItem extends Component {
+    static propTypes = {
+        name: PropTypes.string.isRequired,
+        edit: PropTypes.bool.isRequired,
+        onItemClick: PropTypes.func,
+        onAcceptBtnClick: PropTypes.func,
+        onCancellBtnClick: PropTypes.func,
+        onDoneBtnClick: PropTypes.func,
+        onDragStart: PropTypes.func,
+        onDragOver: PropTypes.func,
+        onDrop: PropTypes.func,
+    }
+    
+    static defaultProps = {
+        onItemClick: () => {},
+        onAcceptBtnClick: () => {},
+        onCancellBtnClick: () => {},
+        onDoneBtnClick: () => {},
+        onDragStart: () => {},
+        onDragOver: () => {},
+        onDrop: () => {},
+    }
 
-    return (
-        <div className={`TodoItem ${isDone && 'TodoItem__done'}`}
-            draggable={!isDone}
-            droppable="true"
-            onClick={onItemClick}
-            item-id={itemId}
-            onDragStart={onDragStart}
-            onDrop={(e)=>onDrop(e)}
-            onDragOver={onDragOver}
-        >
-            {(!edit || isDone) && name}
-            {!isDone && edit && <BtnsList>
-                <CtrlInput currentValue={name}/>
-                <Button name="Принять" onClick={onAcceptBtnClick}/>
-                <Button name="Отменить" onClick={onCancellBtnClick}/>
-                <Button name="Завершить" onClick={onDoneBtnClick}/>
-            </BtnsList>}
-        </div>
-    )
-}
+    state = {
+        currentValue: this.props.name,
+    }
+    
+    onChange = (ev) => {
+        this.setState({
+            currentValue: ev.target.value,
+        })
+    }
 
-TodoItem.propTypes = {
-    name: PropTypes.string.isRequired,
-    edit: PropTypes.bool.isRequired,
-    onItemClick: PropTypes.func,
-    onAcceptBtnClick: PropTypes.func,
-    onCancellBtnClick: PropTypes.func,
-    onDoneBtnClick: PropTypes.func,
-    onDragStart: PropTypes.func,
-    onDragOver: PropTypes.func,
-    onDrop: PropTypes.func,
-}
+    render() {
+        const {
+            edit,
+            itemId,
+            name,
+            isDone,
+            onItemClick,
+            onAcceptBtnClick,
+            onCancellBtnClick,
+            onDoneBtnClick,
+            onDragStart,
+            onDragOver,
+            onDrop,
+        } = this.props;
 
-TodoItem.defaultProps = {
-    onItemClick: () => {},
-    onAcceptBtnClick: () => {},
-    onCancellBtnClick: () => {},
-    onDoneBtnClick: () => {},
-    onDragStart: () => {},
-    onDragOver: () => {},
-    onDrop: () => {},
+        const { currentValue } = this.state;
+
+        return (
+            <div className={`TodoItem ${isDone && 'TodoItem__done'}`}
+                draggable={!isDone}
+                droppable="true"
+                onClick={onItemClick}
+                item-id={itemId}
+                onDragStart={onDragStart}
+                onDrop={(e)=>onDrop(e)}
+                onDragOver={onDragOver}
+            >
+                {(!edit || isDone) && name}
+                {!isDone && edit && <BtnsList>
+                    <CtrlInput currentValue={currentValue} onChange={this.onChange}/>
+                    <Button name="Принять" onClick={(ev) => onAcceptBtnClick(ev, currentValue, itemId)}/>
+                    <Button name="Отменить" onClick={onCancellBtnClick}/>
+                    <Button name="Завершить" onClick={onDoneBtnClick}/>
+                </BtnsList>}
+            </div>
+        )
+    }
 }
 
 export default TodoItem;

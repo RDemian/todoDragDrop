@@ -19,7 +19,9 @@ const getData = async (url) => {
 }
 //Обновление / Удаление
 const updateData = async (url, data, method) => {
-    const resp = await fetch(`${BASE_URL}${url}/${data.id}`, {
+    const id = method === METHOD.POST ? '' : data.id;
+
+    const resp = await fetch(`${BASE_URL}${url}/${id}`, {
         method: method,
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -40,6 +42,14 @@ export const getTodoLists = async () => {
 
 export const getTodoItems = async () => {
     return await getData('todoItems');
+}
+//Добавление
+export const addTodoLists = async (data) => {
+    return await updateData('todoList', data, METHOD.POST);
+}
+
+export const addTodoItems = async (data) => {
+    return await updateData('todoItems', data, METHOD.POST);
 }
 //Обновление
 export const updateTodoLists = async (data) => {

@@ -5,6 +5,10 @@ export const TYPES = {
     ITEMS_SUCCESS: 'ITEMS_SUCCESS',
     ITEMS_ERROR: 'ITEMS_ERROR',
 
+    ITEM_ADD: 'ITEM_ADD',
+    ITEM_ADD_SUCCESS: 'ITEM_ADD_SUCCESS',
+    ITEM_ADD_ERROR: 'ITEM_ADD_ERROR',
+
     ITEM_UPDATE: 'ITEM_UPDATE',
     ITEM_UPDATE_SUCCESS: 'ITEM_UPDATE_SUCCESS',
     ITEM_UPDATE_ERROR: 'ITEM_UPDATE_ERROR',
@@ -68,6 +72,38 @@ export function updateItem(data) {
         } catch(err) {
             dispatch({
                 type: TYPES.ITEM_UPDATE_ERROR,
+                payload: {
+                    fetching: false,
+                    fetchError: err,
+                },
+            })
+            console.error(err);
+        }
+    }
+}
+
+export function addItem(data) {
+    return async(dispatch) => {
+        dispatch({
+            type: TYPES.ITEM_ADD,
+            payload: {
+                fetching: true,
+                fetchError: null,
+            },
+        })
+
+        try {
+            const updateItem = await api.addTodoItems(data);
+            dispatch({
+                type: TYPES.ITEM_ADD_SUCCESS,
+                payload: {
+                    fetching: false,
+                    item: updateItem,
+                },
+            })
+        } catch(err) {
+            dispatch({
+                type: TYPES.ITEM_ADD_ERROR,
                 payload: {
                     fetching: false,
                     fetchError: err,

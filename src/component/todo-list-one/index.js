@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import BtnsList from '../../component/btns-list';
@@ -7,38 +7,53 @@ import CtrlInput from '../../component/ctrl-input';
 
 import './styles.scss';
 
-const TodoListOne = ({ listName, children, listId, onDrop, onDragOver, }) => {
-    return (
-        <div className="TodoListOne" list-id={listId} onDrop={onDrop} onDragOver={onDragOver}>
-            <div className="TodoListOne__header">
-                <div className="TodoListOne__title">{ listName }</div>
-                <BtnsList>
-                    <CtrlInput />
-                    <Button name="Добавить" />
-                </BtnsList>
-            </div>
-            <div className="TodoListOne__ul">
-                {React.Children.map(children, el => el)}
-            </div>
-        </div>
-    )
-}
+class TodoListOne extends Component {
+    static propTypes = {
+        listName: PropTypes.string.isRequired,
+        listId: PropTypes.number.isRequired,
+        children: PropTypes.oneOfType([
+            PropTypes.array,
+            PropTypes.object,
+        ]),
+        onDragOver: PropTypes.func,
+        onDrop: PropTypes.func,
+        onAddItem: PropTypes.func.isRequired,
+    }
+    
+    static defaultProps = {
+        children: [],
+        onDragOver: () => {},
+        onDrop: () => {},
+    }
 
-TodoListOne.propTypes = {
-    listName: PropTypes.string.isRequired,
-    listId: PropTypes.number.isRequired,
-    children: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object,
-    ]),
-    onDragOver: PropTypes.func,
-    onDrop: PropTypes.func,
-}
+    state = {
+        currentValue: '',
+    }
+    
+    onChange = (ev) => {
+        this.setState({
+            currentValue: ev.target.value,
+        })
+    }
 
-TodoListOne.defaultProps = {
-    children: [],
-    onDragOver: () => {},
-    onDrop: () => {},
+    render() {
+        const { listName, children, listId, onDrop, onDragOver, onAddItem } = this.props;
+        const { currentValue } = this.state;
+        return (
+            <div className="TodoListOne" list-id={listId} onDrop={onDrop} onDragOver={onDragOver}>
+                <div className="TodoListOne__header">
+                    <div className="TodoListOne__title">{ listName }</div>
+                    <BtnsList>
+                        <CtrlInput currentValue={currentValue} onChange={this.onChange}/>
+                        <Button name="Добавить" onClick={() => onAddItem(currentValue)}/>
+                    </BtnsList>
+                </div>
+                <div className="TodoListOne__ul">
+                    {React.Children.map(children, el => el)}
+                </div>
+            </div>
+        )
+    }
 }
 
 export default TodoListOne;

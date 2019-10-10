@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as listActions from '../../store/todo-lists/actions';
 import * as itemsActions from '../../store/todo-items/actions';
 import * as todoListsSelectors from '../../store/todo-lists/selectors';
+import * as todoItemsSelectors from '../../store/todo-items/selectors';
 
 import BtnsList from '../../component/btns-list';
 import Button from '../../component/button';
@@ -33,10 +34,7 @@ class TodoLists extends Component {
     }
 
     static isNull(e) {
-        if (typeof e === 'null') {
-            return true;
-        }
-        return false;
+        return (typeof e === 'null');
     }
     
     static getParentElement(currentEl, needClass) {
@@ -87,15 +85,26 @@ class TodoLists extends Component {
         }
     }
 
-    onAcceptBtnClick = ev => {
+    onAcceptBtnClick = async (ev, currentValue, itemId) => {
         ev.stopPropagation();
+        const { dispatch, items } = this.props;
+        const item = items.find(item => item.id === itemId);
+        
+        await dispatch(itemsActions.updateItem({
+            ...item,
+            name: currentValue,
+        }));
+
+        this.setState({
+            editItemId: null,
+        });
     }
 
     onCancellBtnClick = ev => {
         ev.stopPropagation();
         this.setState({
             editItemId: null,
-        })
+        });
     }
 
     onDoneBtnClick = (ev, listId, itemId) => {
@@ -106,7 +115,7 @@ class TodoLists extends Component {
         dispatch(itemsActions.updateItem({
             ...item,
             isDone: true,
-        }))
+        }));
         
     }
 
@@ -128,7 +137,7 @@ class TodoLists extends Component {
         this.endItemId = null;
         await dispatch(itemsActions.deleteItem({
             id: this.startItemId,
-        }))
+        }));
         await dispatch(itemsActions.fetchItems());
     }
 
@@ -151,19 +160,41 @@ class TodoLists extends Component {
             await dispatch(itemsActions.updateItem({
                 ...startItem,
                 list_id: endListId,
-            }))
+            }));
         } else {
             if (targetEl.classList.contains('TodoItem')) {
                 this.endItemId = ev.target && Number(ev.target.getAttribute('item-id'));
                 this.setState(state => ({
                     countSort: ++state.countSort,
-                }))
+                }));
             }
         }
     }
 
     onDragOver = ev => {
         ev.preventDefault();
+    }
+
+    onAddItem = async name => {
+        const { dispatch, items } = this.props;
+        
+        let maxId = items.reduce((prev, item) => {
+            if (item.id > prev) {
+                return item.id;
+            } else {
+                return prev;
+            }
+        }, 0);
+        
+        await dispatch(itemsActions.addItem({
+            "id": ++maxId,
+            "list_id": 0,
+            "isDone": false,
+            "name": name,
+        }));
+
+        await dispatch(itemsActions.fetchItems());
+        
     }
     
     renderHeader() {
@@ -179,11 +210,16 @@ class TodoLists extends Component {
     }
 
     sortList = (listsWithItems) => {
-        if ((this.startListId === this.endListId) && (this.startItemId || this.startItemId === 0) && (this.endItemId || this.endItemId === 0)) {
+        const isOneList = this.startListId === this.endListId;
+        const hasStartId = this.startItemId || this.startItemId === 0;
+        const hasEndId = this.endItemId || this.endItemId === 0;
+
+        if (isOneList && hasStartId && hasEndId) {
             const listIndex = this._getIndexById(listsWithItems, this.startListId);
             const currentItems = this._getItems(listIndex);
             const startIndex = this._getIndexById(currentItems, this.startItemId);
             const endIndex = this._getIndexById(currentItems, this.endItemId);
+
             if ((startIndex || startIndex === 0) && (endIndex || endIndex === 0)) {
                 [currentItems[startIndex], currentItems[endIndex]] = [currentItems[endIndex], currentItems[startIndex]];
             }
@@ -210,6 +246,7 @@ class TodoLists extends Component {
                                 listId={list.id}
                                 onDrop={this.onDrop}
                                 onDragOver={this.onDragOver}
+                                onAddItem={this.onAddItem}
                             >
                                 {list.items.map((item, index) => 
                                     <TodoItem 
@@ -240,6 +277,7 @@ class TodoLists extends Component {
 function mapStateToProps(state) {
     return {
         listsWithItems: todoListsSelectors.selectListsWithItems(state),
+        items: todoItemsSelectors.selectItems(state),
     }
 }
 

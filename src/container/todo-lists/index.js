@@ -24,7 +24,6 @@ class TodoLists extends Component {
         this.state = {
             editItemId: null,
             countSort: 0,
-            doneSort: false,
         }
     }
 
@@ -195,12 +194,6 @@ class TodoLists extends Component {
         await dispatch(itemsActions.fetchItems());
         
     }
-
-    onDoneSort = () => {
-        this.setState(({ doneSort }) => ({
-           doneSort: !doneSort,
-        }));
-    }
     
     renderHeader() {
         return (
@@ -252,9 +245,8 @@ class TodoLists extends Component {
                                 onDrop={this.onDrop}
                                 onDragOver={this.onDragOver}
                                 onAddItem={this.onAddItem}
-                                onDoneSort={this.onDoneSort}
                             >
-                                {list.items.map((item, index) => 
+                                {list.items.map(item => 
                                     <TodoItem 
                                         key={item.id}
                                         isDone={item.isDone}

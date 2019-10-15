@@ -49,7 +49,7 @@
     {
       "id": 6,
       "list_id": 0,
-      "isDone": false,
+      "isDone": true,
       "name": "Выпить чашечку кофе"
     },
     {
@@ -57,12 +57,6 @@
       "list_id": 0,
       "isDone": false,
       "name": "Выполнить задачу"
-    },
-    {
-      "id": 8,
-      "list_id": 1,
-      "isDone": false,
-      "name": "Проверить холодильник"
     },
     {
       "id": 9,

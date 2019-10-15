@@ -201,7 +201,7 @@ class TodoLists extends Component {
                 <div className="TodoLists__title">TodoLists</div>
                 <BtnsList>
                     <CtrlInput />
-                    <Button name="Добавить" />
+                    <Button name="Добавить" disabled/>
                 </BtnsList> 
             </div>
         )

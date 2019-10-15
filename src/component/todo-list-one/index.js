@@ -18,6 +18,7 @@ class TodoListOne extends Component {
         onDragOver: PropTypes.func,
         onDrop: PropTypes.func,
         onAddItem: PropTypes.func.isRequired,
+        onDoneSort: PropTypes.func.isRequired,
     }
     
     static defaultProps = {
@@ -37,7 +38,7 @@ class TodoListOne extends Component {
     }
 
     render() {
-        const { listName, children, listId, onDrop, onDragOver, onAddItem } = this.props;
+        const { listName, children, listId, onDrop, onDragOver, onAddItem, onDoneSort } = this.props;
         const { currentValue } = this.state;
         return (
             <div className="TodoListOne" list-id={listId} onDrop={onDrop} onDragOver={onDragOver}>
@@ -45,7 +46,8 @@ class TodoListOne extends Component {
                     <div className="TodoListOne__title">{ listName }</div>
                     <BtnsList>
                         <CtrlInput currentValue={currentValue} onChange={this.onChange}/>
-                        <Button name="Добавить" onClick={() => onAddItem(currentValue)}/>
+                        <Button name="Добавить" onClick={() => onAddItem(currentValue, listId)}/>
+                        <Button name="Сортировать" onClick={onDoneSort}/>
                     </BtnsList>
                 </div>
                 <div className="TodoListOne__ul">

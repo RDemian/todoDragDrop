@@ -24,7 +24,7 @@
     },
     {
       "id": 2,
-      "list_id": 1,
+      "list_id": 0,
       "isDone": false,
       "name": "Посмотреть ЯП"
     },
@@ -51,6 +51,24 @@
       "list_id": 0,
       "isDone": false,
       "name": "Выпить чашечку кофе"
+    },
+    {
+      "id": 7,
+      "list_id": 0,
+      "isDone": false,
+      "name": "Выполнить задачу"
+    },
+    {
+      "id": 8,
+      "list_id": 1,
+      "isDone": false,
+      "name": "Проверить холодильник"
+    },
+    {
+      "id": 9,
+      "list_id": 1,
+      "isDone": false,
+      "name": "Полежать на диване"
     }
   ]
 }

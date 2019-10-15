@@ -24,6 +24,7 @@ class TodoLists extends Component {
         this.state = {
             editItemId: null,
             countSort: 0,
+            doneSort: false,
         }
     }
 
@@ -32,15 +33,11 @@ class TodoLists extends Component {
         dispatch(listActions.fetchLists());
         dispatch(itemsActions.fetchItems());
     }
-
-    static isNull(e) {
-        return (typeof e === 'null');
-    }
     
     static getParentElement(currentEl, needClass) {
         while (!(currentEl && currentEl.classList.contains(needClass))) {
             currentEl = currentEl && currentEl.parentElement;
-            if(TodoLists.isNull(currentEl)) {
+            if(currentEl === null) {
                 break;
             }
         }
@@ -175,8 +172,10 @@ class TodoLists extends Component {
         ev.preventDefault();
     }
 
-    onAddItem = async name => {
+    onAddItem = async (name, listId) => {
         const { dispatch, items } = this.props;
+
+        if (!name) return;
         
         let maxId = items.reduce((prev, item) => {
             if (item.id > prev) {
@@ -188,13 +187,19 @@ class TodoLists extends Component {
         
         await dispatch(itemsActions.addItem({
             "id": ++maxId,
-            "list_id": 0,
+            "list_id": Number(listId),
             "isDone": false,
             "name": name,
         }));
 
         await dispatch(itemsActions.fetchItems());
         
+    }
+
+    onDoneSort = () => {
+        this.setState(({ doneSort }) => ({
+           doneSort: !doneSort,
+        }));
     }
     
     renderHeader() {
@@ -247,6 +252,7 @@ class TodoLists extends Component {
                                 onDrop={this.onDrop}
                                 onDragOver={this.onDragOver}
                                 onAddItem={this.onAddItem}
+                                onDoneSort={this.onDoneSort}
                             >
                                 {list.items.map((item, index) => 
                                     <TodoItem 

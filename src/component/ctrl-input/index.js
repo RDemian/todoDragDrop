@@ -8,10 +8,12 @@ const CtrlInput = ({ currentValue, onChange }) => {
 
 CtrlInput.propTypes = {
     currentValue: PropTypes.string,
+    onChange: PropTypes.func,
 }
 
 CtrlInput.defaultProps = {
     currentValue: '',
+    onChange: () => {},
 }
 
 export default CtrlInput;
